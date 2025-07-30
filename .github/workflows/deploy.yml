@@ -9,13 +9,15 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    services:
-      docker:
-        image: docker:dind
-        privileged: true
-        options: --network host
 
     steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Start Docker daemon (DinD)
+        run: |
+          sudo systemctl start docker
+
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -24,16 +26,16 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull Docker image from GHCR
-        run: docker pull ghcr.io/${{ github.repository_owner }}/practest-hafif-raihan:latest
+        run: docker pull ghcr.io/hafifrhn/practest-hafif-raihan:latest
 
       - name: Run Docker container
         run: |
-          docker run -d --rm --name practest-hafif-raihan -p 8081:8080 ghcr.io/${{ github.repository_owner }}/practest-hafif-raihan:latest
+          docker run -d --rm --name practest-hafif-raihan -p 8081:8080 ghcr.io/hafifrhn/practest-hafif-raihan:latest
 
-      - name: Show running containers
+      - name: List running containers
         run: docker ps
 
-      - name: Verify practest.html is accessible
+      - name: Test practest.html
         run: |
           sleep 5
           curl http://localhost:8081/practest.html

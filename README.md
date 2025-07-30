@@ -9,10 +9,12 @@ docker run -d --name practest-hafif-raihan -p 8081:8080 ghcr.io/hafifrhn/practes
 curl http://localhost:8081/practest.html
 
 Penjelasan Pipeline CI/CD :
+
 A. Build_deploy.yml
 -	Build Docker Image dari Dockerfile
 -	Login ke GitHub Container Registry (GHCR)
 -	Push Image ke GHCR
+
 B. Deploy.yml
 - Menjalankan container dari image GHCR (Pada Port 8081)
 - Verifikasi container dan file HTML dapat diakses

@@ -16,6 +16,7 @@ A. Build_deploy.yml
 B. Deploy.yml
 - Menjalankan container dari image GHCR (Pada Port 8081)
 - Verifikasi container dan file HTML dapat diakses
+
 Asumsi :
 1. GHCR digunakan karena pada Docker terdapat banyak error dan belum menemukan hasilnya.
 2. Port 8081 sesuai arahan

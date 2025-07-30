@@ -1,0 +1,39 @@
+name: Deploy Docker Container
+
+on:
+  workflow_run:
+    workflows: ["Build and Push Docker Image"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    services:
+      docker:
+        image: docker:dind
+        privileged: true
+        options: --network host
+
+    steps:
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull Docker image from GHCR
+        run: docker pull ghcr.io/${{ github.repository_owner }}/practest-hafif-raihan:latest
+
+      - name: Run Docker container
+        run: |
+          docker run -d --rm --name practest-hafif-raihan -p 8081:8080 ghcr.io/${{ github.repository_owner }}/practest-hafif-raihan:latest
+
+      - name: Show running containers
+        run: docker ps
+
+      - name: Verify practest.html is accessible
+        run: |
+          sleep 5
+          curl http://localhost:8081/practest.html
